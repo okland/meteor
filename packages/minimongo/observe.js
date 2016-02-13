@@ -46,7 +46,7 @@ LocalCollection._CachingChangeObserver = function (options) {
       }
     };
   } else {
-    self.docs = new LocalCollection._IdMap;
+    self.docs = new LocalCollection._ImmutableIdMap;
     self.applyChange = {
       added: function (id, fields) {
         var doc = EJSON.clone(fields);

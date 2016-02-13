@@ -5,3 +5,13 @@ LocalCollection._IdMap = function () {
 
 Meteor._inherits(LocalCollection._IdMap, IdMap);
 
+
+// Immutable id map
+LocalCollection._ImmutableIdMap = function () {
+    var self = this;
+    ImmutableIdMap.call(self, MongoID.idStringify, MongoID.idParse);
+};
+
+Meteor._inherits(LocalCollection._ImmutableIdMap, ImmutableIdMap);
+
+
