@@ -176,7 +176,10 @@ _.extend(PollingObserveDriver.prototype, {
       LocalCollection._diffQueryChanges(
         self._ordered, oldResults, newResults, self._multiplexer);
     }
-
+    
+    // Notify that bulkEnded
+    self._multiplexer.bulkEnded && self._multiplexer.bulkEnded();
+    
     // Signals the multiplexer to allow all observeChanges calls that share this
     // multiplexer to return. (This happens asynchronously, via the
     // multiplexer's queue.)
