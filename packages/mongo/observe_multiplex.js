@@ -141,9 +141,9 @@ _.extend(ObserveMultiplexer.prototype, {
   callbackNames: function () {
     var self = this;
     if (self._ordered)
-      return ["addedBefore", "changed", "movedBefore", "removed"];
+      return ["addedBefore", "changed", "movedBefore", "removed", "bulkEnded"];
     else
-      return ["added", "changed", "removed"];
+      return ["added", "changed", "removed", "bulkEnded"];
   },
   _ready: function () {
     return this._readyFuture.isResolved();
@@ -160,12 +160,14 @@ _.extend(ObserveMultiplexer.prototype, {
       // state from their arguments (assuming that their supplied callbacks
       // don't) and skip this clone. Currently 'changed' hangs on to state
       // though.
-      self._cache.applyChange[callbackName].apply(null, EJSON.clone(args));
-
+      if (callbackName !== "bulkEnded" ) {
+        self._cache.applyChange[callbackName].apply(null, EJSON.clone(args));
+      } 
+  
       // If we haven't finished the initial adds, then we should only be getting
       // adds.
       if (!self._ready() &&
-          (callbackName !== 'added' && callbackName !== 'addedBefore')) {
+          (callbackName !== 'added' && callbackName !== 'addedBefore' && callbackName !== 'bulkEnded')) {
         throw new Error("Got " + callbackName + " during initial adds");
       }
 
@@ -207,6 +209,7 @@ _.extend(ObserveMultiplexer.prototype, {
       else
         add(id, fields);
     });
+    handle._bulkEnded && handle._bulkEnded();
   }
 });
 
